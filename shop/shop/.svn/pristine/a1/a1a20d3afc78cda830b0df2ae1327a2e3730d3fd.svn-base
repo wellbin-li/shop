@@ -1,0 +1,5 @@
+dateSource=com.mchange.v2.c3p0.ComboPooledDataSource
+driverClass=com.mysql.jdbc.Driver
+jdbcUrl=jdbc\:mysql\://218.16.123.83\:3306/sq_bfsgk35371
+user=sq_bfsgk35371
+password=fuw180

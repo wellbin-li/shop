@@ -1,0 +1,48 @@
+package cn.it.shop.service.impl;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+
+import cn.it.shop.model.Category;
+import cn.it.shop.service.CategoryService;
+import cn.it.shop.util.HibernateSessionFactory;
+
+public class CategoryServiceImpl implements CategoryService {
+/**
+ * (目前service与DAO整合在一起)
+ */
+	private SessionFactory sessionFactory;
+		
+	protected Session getSession(){
+		//从当前线程获取session 如果没有则创建session
+		return sessionFactory.getCurrentSession();
+	}
+	//与bean中的属性sessionFactory对应
+	public void setSessionFactory(SessionFactory sessionFactory){
+		this.sessionFactory=sessionFactory;
+	}
+	@Override  //没有整合的情况
+	public void save(Category category) {
+		// 通过工具类获取session
+		Session session=HibernateSessionFactory.getSession();
+		try {
+			//手动事物
+			session.getTransaction().begin();
+			//执行业务逻辑
+			session.save(category);
+			//手动提交
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			throw new RuntimeException(e);
+		} finally{
+			HibernateSessionFactory.closeSession();
+		}
+	}
+	
+	@Override  //整合的情况
+	public void update(Category category) {
+		getSession().update(category);
+	}
+
+}

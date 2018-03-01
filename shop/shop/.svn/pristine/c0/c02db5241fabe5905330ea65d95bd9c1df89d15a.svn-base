@@ -1,0 +1,57 @@
+package cn.it.shop.action;
+
+import java.util.Map;
+
+import org.apache.struts2.interceptor.ApplicationAware;
+import org.apache.struts2.interceptor.RequestAware;
+import org.apache.struts2.interceptor.SessionAware;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import cn.it.shop.model.Category;
+import cn.it.shop.service.CategoryService;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+/*
+ * ModelDriven:此接口必须要实现getModel()方法，此方法会把返回的对象压倒栈顶中
+ */
+
+@Controller
+@Scope("prototype")
+public class CategoryAction extends BaseAction<Category> {
+
+	
+	public String update(){
+		System.out.println(ActionContext.getContext().getValueStack().getRoot());
+		System.out.println("----update----");
+//		categoryService.update(category);
+		System.out.println(model);
+		return "index";
+	}
+	
+	public String save(){
+		System.out.println("----save----");
+		System.out.println(categoryService);
+		return "index";
+	}
+	
+	public String query(){
+		//显示值栈中的root对象
+		System.out.println(ActionContext.getContext().getValueStack().getRoot());
+		//解决方案1：采用相应的***map 取代了原来的内置对象，这样与jsp没有依赖，但是代码量比较大
+//		ActionContext.getContext().put("categoryList", categoryService.query());
+//		ActionContext.getContext().getSession().put("categoryList", categoryService.query());
+//		ActionContext.getContext().getApplication().put("categoryList", categoryService.query());
+		
+		//解决方案2：实现相应的接口，让相应的map注入,但是如果接口写在父类代码量也会比较大，因此创建BaseAction
+		System.out.println("方案2 测试");
+		request.put("categoryList", categoryService.query());
+		session.put("categoryList", categoryService.query());
+		application.put("categoryList", categoryService.query());
+		return "index";
+	}
+	
+	
+}
